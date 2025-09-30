@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>BeachStay - Seu Apoio ao Aluguel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Tela Login -->
+  <div id="tela-login" class="tela-form ativa">
+    <h1>🏝️ BeachStay</h1>
+    <h2>Login</h2>
+    <form id="form-login">
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="senha" placeholder="Senha" required>
+      <button type="submit">Entrar</button>
+    </form>
+    <p>Ainda não tem conta?</p>
+    <button onclick="abrirTela('cadastro')">Criar Conta</button>
+  </div>
+
+  <!-- Tela Cadastro -->
+  <div id="tela-cadastro" class="tela-form">
+    <h2>Criar Conta</h2>
+    <form id="form-cadastro">
+      <input type="text" id="nomeCadastro" placeholder="Nome Completo" required>
+      <input type="email" id="emailCadastro" placeholder="Email" required>
+      <input type="password" id="senhaCadastro" placeholder="Senha" required>
+      <button type="submit">Cadastrar</button>
+    </form>
+    <button onclick="abrirTela('login')">⬅️ Voltar ao Login</button>
+  </div>
+
+  <!-- Tela Inicial (Escolha de Perfil) -->
+  <div id="tela-inicial" class="tela">
+    <h1>🏝️ BeachStay</h1>
+    <p>Escolha seu perfil:</p>
+    <button onclick="abrirTela('proprietario')">Sou Proprietário</button>
+    <button onclick="abrirTela('hospede-codigo')">Sou Hóspede</button>
+    <button onclick="abrirTela('login')">⬅️ Logout</button>
+  </div>
+
+  <!-- Tela Hóspede: Inserir Código -->
+<div id="tela-hospede-codigo" class="tela escondido">
+  <h2>🔑 Acesse sua Estadia</h2>
+  <p>Digite o código fornecido pelo anfitrião para visualizar os serviços extras.</p>
+
+  <form id="form-codigo-casa">
+    <input type="text" id="codigoCasa" placeholder="Digite o código da casa" required>
+    <button type="submit">Acessar Serviços</button>
+  </form>
+
+  <button onclick="abrirTela('inicial')">⬅️ Voltar</button>
+</div>
+
+
+  <!-- Tela Hóspede -->
+  <div id="tela-hospede" class="tela">
+    <h2>Área do Hóspede</h2>
+    <p>Selecione uma casa para ver os serviços disponíveis:</p>
+
+    <div class="carrossel">
+      <div class="casa" onclick="abrirServicos('recanto')">
+        <img src="https://picsum.photos/300/150?random=1" alt="Recanto do Mar">
+        <p>Recanto do Mar</p>
+      </div>
+      <div class="casa" onclick="abrirServicos('ondas')">
+        <img src="https://picsum.photos/300/150?random=2" alt="Casa das Ondas">
+        <p>Casa das Ondas</p>
+      </div>
+      <div class="casa" onclick="abrirServicos('refugio')">
+        <img src="https://picsum.photos/300/150?random=3" alt="Refúgio da Praia">
+        <p>Refúgio da Praia</p>
+      </div>
+    </div>
+
+    <button onclick="abrirTela('inicial')">⬅️ Voltar</button>
+  </div>
+
+  <!-- Tela Serviços da Casa -->
+  <div id="tela-servicos" class="tela">
+    <h2 id="titulo-casa">Serviços da Casa</h2>
+    <ul id="lista-servicos-casa"></ul>
+    <button onclick="abrirTela('hospede')">⬅️ Voltar às Casas</button>
+  </div>
+
+
+  <!-- DASHBOARD DO PROPRIETÁRIO -->
+<div id="tela-proprietario" class="tela-form">
+  <h2>Dashboard do Proprietário</h2>
+  <button onclick="abrirTela('cadastro-propriedade')">+ Nova Propriedade</button>
+  
+  <ul id="lista-propriedades">
+    <!-- Exemplo de propriedade -->
+    <li onclick="abrirTela('gerenciar-propriedade')">Casa de Praia - Guarapari</li>
+  </ul>
+
+  <button onclick="abrirTela('login')">⬅️ Sair</button>
+</div>
+
+<!-- CADASTRO DE PROPRIEDADE -->
+<div id="tela-cadastro-propriedade" class="tela-form">
+  <h2>Cadastrar Propriedade</h2>
+  <form id="form-cadastro-propriedade">
+    <input type="text" placeholder="Nome da propriedade" required>
+    <input type="text" placeholder="Endereço / Localização" required>
+    <textarea placeholder="Descrição"></textarea>
+    <button type="submit">Salvar</button>
+  </form>
+  <button onclick="abrirTela('proprietario')">⬅️ Voltar</button>
+</div>
+
+<!-- GERENCIAMENTO DE PROPRIEDADE -->
+<div id="tela-gerenciar-propriedade" class="tela-form">
+  <h2>Gerenciar Propriedade</h2>
+
+  <button onclick="abrirTela('servicos-propriedade')">Serviços Extras</button>
+  <button onclick="abrirTela('galeria-propriedade')">Galeria de Fotos</button>
+  <button onclick="abrirTela('proprietario')">⬅️ Voltar</button>
+</div>
+
+<!-- SERVIÇOS -->
+<div id="tela-servicos-propriedade" class="tela-form">
+  <h2>Serviços Extras</h2>
+  <form id="form-servico">
+    <input type="text" placeholder="Nome do serviço" required>
+    <input type="number" placeholder="Preço (R$)" required>
+    <button type="submit">Adicionar</button>
+  </form>
+  <ul id="lista-servicos"></ul>
+  <button onclick="abrirTela('gerenciar-propriedade')">⬅️ Voltar</button>
+</div>
+
+<!-- GALERIA -->
+<div id="tela-galeria-propriedade" class="tela-form">
+  <h2>Galeria de Fotos</h2>
+  <input type="file" id="uploadFoto" accept="image/*">
+  <div class="galeria">
+    <!-- Fotos vão aparecer aqui -->
+  </div>
+  <button onclick="abrirTela('gerenciar-propriedade')">⬅️ Voltar</button>
+</div>
+
+  
+  <script src="script.js"></script>
+</body>
+</html>
