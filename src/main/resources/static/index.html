@@ -8,7 +8,7 @@
 <body>
   <!-- Tela Login -->
   <div id="tela-login" class="tela-form ativa">
-    <h1>🏝️ BeachStay</h1>
+    <h1>🏝️ StayPlus</h1>
     <h2>Login</h2>
     <form id="form-login">
       <input type="email" id="email" placeholder="Email" required>
@@ -41,48 +41,18 @@
   </div>
 
   <!-- Tela Hóspede: Inserir Código -->
-<div id="tela-hospede-codigo" class="tela escondido">
+<div id="tela-hospede-codigo" class="tela-form">
+  <h1>🏝️ BeachStay</h1>
   <h2>🔑 Acesse sua Estadia</h2>
   <p>Digite o código fornecido pelo anfitrião para visualizar os serviços extras.</p>
 
   <form id="form-codigo-casa">
     <input type="text" id="codigoCasa" placeholder="Digite o código da casa" required>
-    <button type="submit">Acessar Serviços</button>
+    <button  onclick="abrirTela('servicos')">Acessar Serviços</button>
   </form>
 
   <button onclick="abrirTela('inicial')">⬅️ Voltar</button>
 </div>
-
-
-  <!-- Tela Hóspede -->
-  <div id="tela-hospede" class="tela">
-    <h2>Área do Hóspede</h2>
-    <p>Selecione uma casa para ver os serviços disponíveis:</p>
-
-    <div class="carrossel">
-      <div class="casa" onclick="abrirServicos('recanto')">
-        <img src="https://picsum.photos/300/150?random=1" alt="Recanto do Mar">
-        <p>Recanto do Mar</p>
-      </div>
-      <div class="casa" onclick="abrirServicos('ondas')">
-        <img src="https://picsum.photos/300/150?random=2" alt="Casa das Ondas">
-        <p>Casa das Ondas</p>
-      </div>
-      <div class="casa" onclick="abrirServicos('refugio')">
-        <img src="https://picsum.photos/300/150?random=3" alt="Refúgio da Praia">
-        <p>Refúgio da Praia</p>
-      </div>
-    </div>
-
-    <button onclick="abrirTela('inicial')">⬅️ Voltar</button>
-  </div>
-
-  <!-- Tela Serviços da Casa -->
-  <div id="tela-servicos" class="tela">
-    <h2 id="titulo-casa">Serviços da Casa</h2>
-    <ul id="lista-servicos-casa"></ul>
-    <button onclick="abrirTela('hospede')">⬅️ Voltar às Casas</button>
-  </div>
 
 
   <!-- DASHBOARD DO PROPRIETÁRIO -->
@@ -139,6 +109,43 @@
     <!-- Fotos vão aparecer aqui -->
   </div>
   <button onclick="abrirTela('gerenciar-propriedade')">⬅️ Voltar</button>
+</div>
+<!-- Tela Serviços da Casa -->
+<div id="tela-servicos" class="tela">
+  <h2 id="titulo-casa">🏝️ Serviços disponíveis</h2>
+  <p>Selecione os serviços extras que deseja adicionar à sua estadia.</p>
+
+  <div class="grid-servicos">
+    <!-- Card de serviço -->
+    <div class="card-servico">
+      <h3>🍽️ Café da Manhã</h3>
+      <p class="descricao">Delicioso café da manhã completo servido na propriedade.</p>
+      <p class="preco">R$ 35,00</p>
+      <button onclick="adicionarCarrinho('Café da Manhã', 35)">+ Carrinho</button>
+    </div>
+
+    <div class="card-servico">
+      <h3>🚗 Transfer Aeroporto</h3>
+      <p class="descricao">Transporte confortável ida e volta até o aeroporto.</p>
+      <p class="preco">R$ 120,00</p>
+      <button onclick="adicionarCarrinho('Transfer Aeroporto', 120)">+ Carrinho</button>
+    </div>
+
+    <div class="card-servico">
+      <h3>🛶 Passeio de Caiaque</h3>
+      <p class="descricao">Explore o mar em um passeio de caiaque inesquecível.</p>
+      <p class="preco">R$ 80,00</p>
+      <button onclick="adicionarCarrinho('Passeio de Caiaque', 80)">+ Carrinho</button>
+    </div>
+  </div>
+
+  <!-- Carrinho fixo -->
+  <div id="carrinho">
+    🛒 <span id="carrinho-itens">0</span> itens - Total: R$ <span id="carrinho-total">0,00</span>
+    <button id="finalizar-btn">Finalizar Pedido</button>
+  </div>
+
+  <button onclick="abrirTela('hospede-codigo')">⬅️ Voltar</button>
 </div>
 
   

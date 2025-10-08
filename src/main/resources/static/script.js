@@ -119,3 +119,35 @@ formCodigo.addEventListener("submit", function(e) {
   }
 });
 
+let carrinho = [];
+let total = 0;
+
+function adicionarCarrinho(nome, preco) {
+  carrinho.push({ nome, preco });
+  total += preco;
+
+  document.getElementById("carrinho-itens").textContent = carrinho.length;
+  document.getElementById("carrinho-total").textContent = total.toFixed(2).replace(".", ",");
+}
+
+// Evento de finalizar pedido
+document.getElementById("finalizar-btn")?.addEventListener("click", () => {
+  if (carrinho.length === 0) {
+    alert("Seu carrinho está vazio!");
+    return;
+  }
+
+  let resumo = "Itens selecionados:\n";
+  carrinho.forEach(item => {
+    resumo += `- ${item.nome} (R$ ${item.preco})\n`;
+  });
+  resumo += `\nTotal: R$ ${total.toFixed(2)}`;
+  alert(resumo);
+
+  // limpar carrinho
+  carrinho = [];
+  total = 0;
+  document.getElementById("carrinho-itens").textContent = "0";
+  document.getElementById("carrinho-total").textContent = "0,00";
+});
+

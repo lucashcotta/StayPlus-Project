@@ -20,7 +20,7 @@ body {
 
 /* Para telas de formulário (login, proprietário, cadastro) */
 .tela-form {
-  flex-direction: column;
+
   gap: 15px;
   background: rgba(0,0,0,0.4);
   padding: 35px 30px;
@@ -47,14 +47,15 @@ body {
 }
 
 .tela-form input {
-  padding: 12px;
+  padding: 15px;
   border: none;
   border-radius: 10px;
-  width: 100%;
+  width: 92%;
   font-size: 1rem;
   background: rgba(255,255,255,0.85);
   color: #333;
   transition: 0.3s;
+  
 }
 
 .tela-form input:focus {
@@ -259,3 +260,84 @@ li {
 .galeria img:hover {
   transform: scale(1.1);
 }
+
+/* Grid de serviços */
+.grid-servicos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.card-servico {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  text-align: center;
+  transition: transform 0.2s ease-in-out;
+}
+
+.card-servico:hover {
+  transform: scale(1.03);
+}
+
+.card-servico h3 {
+  margin-bottom: 10px;
+}
+
+.card-servico .descricao {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.card-servico .preco {
+  font-weight: bold;
+  color: #2d6a4f;
+  margin-bottom: 10px;
+}
+
+.card-servico button {
+  background: #2d6a4f;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.card-servico button:hover {
+  background: #1b4332;
+}
+
+/* Carrinho fixo */
+#carrinho {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #2d6a4f;
+  color: white;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+}
+
+#carrinho button {
+  background: white;
+  color: #2d6a4f;
+  font-weight: bold;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#carrinho button:hover {
+  background: #e9ecef;
+}
+
