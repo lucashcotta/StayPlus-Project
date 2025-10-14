@@ -12,7 +12,7 @@ function voltar() {
 // ========================
 // LOGIN SIMPLIFICADO
 // ========================
-const formLogin = document.getElementById("form-login");
+/*const formLogin = document.getElementById("form-login");
 formLogin.addEventListener("submit", function(e) {
   e.preventDefault();
   const email = document.getElementById("email").value;
@@ -23,7 +23,36 @@ formLogin.addEventListener("submit", function(e) {
   } else {
     alert("Preencha os campos corretamente!");
   }
+});*/
+
+const formLogin = document.getElementById("form-login");
+formLogin.addEventListener("submit", async function(e) {
+  e.preventDefault();
+  
+  const email = document.getElementById("email").value;
+  const senha = document.getElementById("senha").value;
+
+  try {
+    const response = await fetch("http://localhost:8080/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, senha })
+    });
+
+    if (response.ok) {
+      const usuario = await response.json();
+
+      sessionStorage.setItem("usuarioLogado", JSON.stringify(usuario));
+
+      abrirTela("inicial");
+    } else {
+      alert("Credenciais inválidas!");
+    }
+  } catch (error) {
+    alert("Erro ao conectar com o servidor.");
+  }
 });
+
 
 // ========================
 // FLUXO PROPRIETÁRIO
