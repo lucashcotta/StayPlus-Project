@@ -5,5 +5,4 @@ CREATE TABLE IF NOT EXISTS usuario (
     email VARCHAR(255) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL
 );
-
-INSERT INTO usuario (nome, email, senha) VALUES ('Lucas Souza', 'lucas@example.com', '123456');
+INSERT INTO usuario (nome, email, senha) VALUES ('Lucas Souza pereira', 'lucashcotta@hotmail.com', '123456789');

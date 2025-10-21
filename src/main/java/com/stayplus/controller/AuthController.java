@@ -2,31 +2,31 @@ package com.stayplus.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.stayplus.model.Usuario;
 import com.stayplus.service.AuthService;
 
+import java.util.Map;
+
 @RestController
-@RequestMapping("/api/auth")
-@CrossOrigin(origins = "*") // permite chamadas do seu front
+@RequestMapping("/api") // <-- ESSENCIAL para bater em /api/login
 public class AuthController {
 
     @Autowired
     private AuthService authService;
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Usuario loginRequest) {
-        Usuario usuario = authService.validarLogin(loginRequest.getEmail(), loginRequest.getSenha());
+    @PostMapping("/login") // <-- ESSENCIAL
+    public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
+        String email = body.get("email");
+        String senha = body.get("senha");
 
-        if (usuario != null) {
-            usuario.setSenha(null); // não enviar senha de volta
-            return ResponseEntity.ok(usuario);
+        Usuario user = authService.validarLogin(email, senha);
+
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.status(401).body("Credenciais inválidas!");
         }
-        return ResponseEntity.status(401).body("Credenciais inválidas");
     }
 }

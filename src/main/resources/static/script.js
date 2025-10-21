@@ -1,5 +1,5 @@
 function abrirTela(id) {
-  document.querySelectorAll('.tela, .tela-form').forEach(tela => 
+  document.querySelectorAll('.tela, .tela-form').forEach(tela =>
     tela.classList.remove('ativa')
   );
   document.getElementById(`tela-${id}`).classList.add('ativa');
@@ -25,15 +25,44 @@ formLogin.addEventListener("submit", function(e) {
   }
 });*/
 
+// const formLogin = document.getElementById("form-login");
+// formLogin.addEventListener("submit", async function (e) {
+//   e.preventDefault();
+
+//   const email = document.getElementById("email").value;
+//   const senha = document.getElementById("senha").value;
+
+//   try {
+//     fetch("/api/login", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({ email, senha })
+//     })
+//       .then(r => r.json())
+//       .then(data => console.log(data));
+
+//     if (response.ok) {
+//       const usuario = await response.json();
+
+//       sessionStorage.setItem("usuarioLogado", JSON.stringify(usuario));
+
+//       abrirTela("inicial");
+//     } else {
+//       alert("Credenciais inválidas!");
+//     }
+//   } catch (error) {
+//     alert("Erro ao conectar com o servidor.");
+//   }
+// });
 const formLogin = document.getElementById("form-login");
-formLogin.addEventListener("submit", async function(e) {
+formLogin.addEventListener("submit", async function (e) {
   e.preventDefault();
-  
+
   const email = document.getElementById("email").value;
   const senha = document.getElementById("senha").value;
 
   try {
-    const response = await fetch("http://localhost:8080/api/auth/login", {
+    const response = await fetch("/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, senha })
@@ -41,14 +70,16 @@ formLogin.addEventListener("submit", async function(e) {
 
     if (response.ok) {
       const usuario = await response.json();
+      console.log("Login OK:", usuario);
 
       sessionStorage.setItem("usuarioLogado", JSON.stringify(usuario));
 
-      abrirTela("inicial");
+      abrirTela("proprietario");
     } else {
       alert("Credenciais inválidas!");
     }
   } catch (error) {
+    console.error("Erro de conexão:", error);
     alert("Erro ao conectar com o servidor.");
   }
 });
@@ -66,7 +97,7 @@ const listaPropriedades = document.getElementById("lista-propriedades");
 
 // Cadastro de propriedade
 const formCadastroPropriedade = document.getElementById("form-cadastro-propriedade");
-formCadastroPropriedade?.addEventListener("submit", function(e) {
+formCadastroPropriedade?.addEventListener("submit", function (e) {
   e.preventDefault();
   const nome = this.querySelector("input[placeholder='Nome da propriedade']").value;
   const endereco = this.querySelector("input[placeholder='Endereço / Localização']").value;
@@ -92,7 +123,7 @@ formCadastroPropriedade?.addEventListener("submit", function(e) {
 const formServico = document.getElementById("form-servico");
 const listaProprietario = document.getElementById("lista-servicos");
 
-formServico?.addEventListener("submit", function(e) {
+formServico?.addEventListener("submit", function (e) {
   e.preventDefault();
 
   const nome = this.querySelector("input[placeholder='Nome do serviço']").value;
@@ -116,12 +147,12 @@ formServico?.addEventListener("submit", function(e) {
 const uploadFoto = document.getElementById("uploadFoto");
 const galeria = document.querySelector(".galeria");
 
-uploadFoto?.addEventListener("change", function() {
+uploadFoto?.addEventListener("change", function () {
   const file = this.files[0];
   if (!file) return;
 
   const reader = new FileReader();
-  reader.onload = function(e) {
+  reader.onload = function (e) {
     const img = document.createElement("img");
     img.src = e.target.result;
     galeria.appendChild(img);
@@ -137,7 +168,7 @@ const casasCadastradas = {
 };
 
 const formCodigo = document.getElementById("form-codigo-casa");
-formCodigo.addEventListener("submit", function(e) {
+formCodigo.addEventListener("submit", function (e) {
   e.preventDefault();
   const codigo = document.getElementById("codigoCasa").value.trim().toUpperCase();
 

@@ -1,4 +1,4 @@
-package com.stayplus.stayplus;
+package com.stayplus;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

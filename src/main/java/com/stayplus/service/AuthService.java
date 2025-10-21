@@ -15,8 +15,7 @@ public class AuthService {
     private UsuarioRepository usuarioRepository;
 
     public Usuario validarLogin(String email, String senha) {
-        return usuarioRepository.findByEmail(email)
-                .filter(u -> u.getSenha().equals(senha)) // Simples (sem criptografia ainda)
+        return usuarioRepository.findByEmailAndSenha(email, senha).filter(u -> u.getSenha().equals(senha)) // Simples (sem criptografia ainda)
                 .orElse(null);
     }
 }
