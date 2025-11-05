@@ -32,7 +32,7 @@ formLogin.addEventListener("submit", async function (e) {
 
       sessionStorage.setItem("usuarioLogado", JSON.stringify(usuario));
 
-      abrirTela("proprietario");
+      abrirTela("inicial");
     } else {
       alert("Credenciais inválidas!");
     }
@@ -117,133 +117,178 @@ if (formCadastro) {
 //   abrirTela("proprietario");
 // });
 // ========================
-// Carregar propriedades do usuário logado
+// FLUXO "SOU PROPRIETÁRIO"
 // ========================
-
-async function carregarPropriedades() {
-  const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
-  if (!usuarioLogado) {
-    alert("Você precisa estar logado!");
-    abrirTela("login");
+document.getElementById("btn-proprietario")?.addEventListener("click", async () => {
+  const usuario = JSON.parse(sessionStorage.getItem("usuarioLogado"));
+  if (!usuario) {
+    alert("Faça login antes de acessar esta área.");
     return;
   }
 
   try {
-    const response = await fetch(`/api/propriedades/usuario/${usuarioLogado.id}`);
-    if (!response.ok) throw new Error("Erro ao buscar propriedades");
+    const response = await fetch(`http://localhost:8080/api/propriedades/usuario/${usuario.id}`);
+    if (!response.ok) throw new Error("Erro ao carregar propriedades");
+
     const propriedades = await response.json();
+    const lista = document.getElementById("lista-propriedades");
+    lista.innerHTML = "";
 
-    exibirPropriedades(propriedades);
+    if (propriedades.length === 0) {
+      lista.innerHTML = "<p>Você ainda não possui propriedades cadastradas.</p>";
+    } else {
+      propriedades.forEach(prop => {
+        const li = document.createElement("li");
+        li.textContent = `${prop.nome} - ${prop.localizacao}`;
+        li.onclick = () => abrirGerenciamentoPropriedade(prop); // 👈 função corrigida
+        lista.appendChild(li);
+      });
+    }
+
+    abrirTela("proprietario");
+
   } catch (error) {
-    console.error("Erro ao carregar propriedades:", error);
-    alert("Erro ao carregar propriedades do servidor.");
+    console.error(error);
+    alert("Erro ao conectar com o servidor.");
   }
-}
+});
 
-function exibirPropriedades(propriedades) {
-  const lista = document.getElementById("lista-propriedades");
-  lista.innerHTML = "";
+// =============================
+// CADASTRAR NOVA PROPRIEDADE
+// =============================
+document.getElementById("btn-cadastrar-propriedade")?.addEventListener("click", () => {
+  document.getElementById("form-nova-propriedade").style.display = "block";
+});
 
-  if (propriedades.length === 0) {
-    lista.innerHTML = "<p>Nenhuma propriedade cadastrada ainda.</p>";
+document.getElementById("tela-cadastro-propriedade")?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const nome = document.getElementById("nomePropriedade").value.trim();
+  const localizacao = document.getElementById("localizacaoPropriedade").value.trim();
+
+  if (!nome || !localizacao) {
+    alert("Preencha todos os campos!");
     return;
   }
 
-  propriedades.forEach(p => {
-    const li = document.createElement("li");
-    li.textContent = `${p.nome} - ${p.endereco}`;
-    li.onclick = () => carregarServicos(p.id, p.nome);
-    lista.appendChild(li);
-  });
-}
+  const usuario = JSON.parse(sessionStorage.getItem("usuarioLogado"));
 
-// ========================
-// Carregar serviços da propriedade
-// ========================
-async function carregarServicos(idPropriedade, nomePropriedade) {
+  const novaPropriedade = {
+    nome,
+    localizacao,
+    proprietario: { id: usuario.id }
+  };
+
   try {
-    const response = await fetch(`/api/servicos/propriedade/${idPropriedade}`);
-    if (!response.ok) throw new Error("Erro ao buscar serviços");
-    const servicos = await response.json();
+    const response = await fetch("http://localhost:8080/api/propriedades", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(novaPropriedade)
+    });
 
-    abrirTela("servicos-propriedade");
-    exibirServicos(servicos, nomePropriedade);
+    if (response.ok) {
+      alert("Propriedade cadastrada com sucesso!");
+      document.getElementById("form-cadastro-propriedade").reset();
+      document.getElementById("form-cadastro-propriedade").style.display = "none";
+      document.getElementById("lista-propriedades").innerHTML = "";
+      // Recarrega a lista
+      document.getElementById("btn-proprietario").click();
+    } else {
+      alert("Erro ao cadastrar propriedade.");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("Erro ao conectar com o servidor.");
+  }
+});
+
+
+
+// ========================
+// Função para abrir uma propriedade
+// ========================
+
+async function carregarServicos(idPropriedade) {
+  try {
+    const response = await fetch(`http://localhost:8080/api/servicos/propriedade/${idPropriedade}`);
+    if (!response.ok) throw new Error("Erro ao buscar serviços");
+
+    const servicos = await response.json();
+    const lista = document.getElementById("lista-servicos");
+    lista.innerHTML = ""; // limpa lista antes de renderizar tudo
+
+    if (!servicos || servicos.length === 0) {
+      lista.innerHTML = "<p>Nenhum serviço cadastrado ainda.</p>";
+      return;
+    }
+
+    servicos.forEach(serv => {
+      const li = document.createElement("li");
+      li.textContent = `${serv.nome} - R$ ${serv.preco}`;
+      lista.appendChild(li);
+    });
   } catch (error) {
     console.error("Erro ao carregar serviços:", error);
     alert("Erro ao carregar serviços.");
   }
 }
 
-function exibirServicos(servicos, nomePropriedade) {
-  const lista = document.getElementById("lista-servicos");
-  lista.innerHTML = `<h3>${nomePropriedade}</h3>`;
 
-  if (servicos.length === 0) {
-    lista.innerHTML += "<p>Nenhum serviço cadastrado ainda.</p>";
-    return;
-  }
+async function abrirGerenciamentoPropriedade(propriedade) {
+  sessionStorage.setItem("propriedadeSelecionada", JSON.stringify(propriedade));
+  abrirTela("gerenciar-propriedade");
 
-  servicos.forEach(s => {
-    const li = document.createElement("li");
-    li.textContent = `${s.nome} - R$ ${s.preco}`;
-    lista.appendChild(li);
-  });
+  // carrega os serviços da propriedade
+  await carregarServicos(propriedade.id);
 }
 
-// ========================
-// Chamar carregarPropriedades ao abrir tela de proprietário
-// ========================
-document.getElementById("tela-proprietario").addEventListener("click", carregarPropriedades);
+
 
 // ========================
-// Serviços do Proprietário
+// Cadastrar um novo servico
 // ========================
+
 const formServico = document.getElementById("form-servico");
-const listaProprietario = document.getElementById("lista-servicos");
-
-formServico?.addEventListener("submit", function (e) {
+formServico?.addEventListener("submit", async function(e) {
   e.preventDefault();
 
   const nome = this.querySelector("input[placeholder='Nome do serviço']").value;
   const preco = this.querySelector("input[placeholder='Preço (R$)']").value;
+  const descricao = this.querySelector("textarea")?.value || "";
 
-  if (!nome || !preco) {
-    alert("Preencha todos os campos!");
+  const propriedade = JSON.parse(sessionStorage.getItem("propriedadeSelecionada"));
+  if (!propriedade) {
+    alert("Erro: nenhuma propriedade selecionada!");
     return;
   }
 
-  const li = document.createElement("li");
-  li.textContent = `${nome} - R$ ${preco}`;
-  listaProprietario.appendChild(li);
+  try {
+    const response = await fetch("http://localhost:8080/api/servicos", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nome,
+        descricao,
+        preco,
+        propriedade: { id: propriedade.id }
+      })
+    });
 
-  this.reset();
+    if (!response.ok) throw new Error("Erro ao cadastrar serviço");
+
+    alert("Serviço cadastrado com sucesso!");
+    abrirTela("gerenciar-propriedade");
+    await carregarServicos(propriedade.id);
+    this.reset();
+  } catch (err) {
+    console.error(err);
+    alert("Erro ao cadastrar serviço.");
+  }
 });
 
-// ========================
-// Galeria de Fotos
-// ========================
-const uploadFoto = document.getElementById("uploadFoto");
-const galeria = document.querySelector(".galeria");
 
-uploadFoto?.addEventListener("change", function () {
-  const file = this.files[0];
-  if (!file) return;
 
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    const img = document.createElement("img");
-    img.src = e.target.result;
-    galeria.appendChild(img);
-  };
-  reader.readAsDataURL(file);
-});
 
-// Simulação: códigos válidos
-const casasCadastradas = {
-  "ABC123": "recanto",
-  "XYZ789": "ondas",
-  "LMN456": "refugio"
-};
 
 const formCodigo = document.getElementById("form-codigo-casa");
 formCodigo.addEventListener("submit", function (e) {

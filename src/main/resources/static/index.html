@@ -35,7 +35,7 @@
   <div id="tela-inicial" class="tela">
     <h1>🏝️ BeachStay</h1>
     <p>Escolha seu perfil:</p>
-    <button onclick="abrirTela('proprietario')">Sou Proprietário</button>
+    <button id="btn-proprietario" onclick="abrirTela('proprietario')">Sou Proprietário</button>
     <button onclick="abrirTela('hospede-codigo')">Sou Hóspede</button>
     <button onclick="abrirTela('login')">⬅️ Logout</button>
   </div>
@@ -65,15 +65,15 @@
     <li onclick="abrirTela('gerenciar-propriedade')">Casa de Praia - Guarapari</li>
   </ul>
 
-  <button onclick="abrirTela('login')">⬅️ Sair</button>
+  <button onclick="abrirTela('inicial')">⬅️ Sair</button>
 </div>
 
 <!-- CADASTRO DE PROPRIEDADE -->
 <div id="tela-cadastro-propriedade" class="tela-form">
   <h2>Cadastrar Propriedade</h2>
   <form id="form-cadastro-propriedade">
-    <input type="text" placeholder="Nome da propriedade" required>
-    <input type="text" placeholder="Endereço / Localização" required>
+    <input id= "nomePropriedade" type="text" placeholder="Nome da propriedade" required>
+    <input id= "localizacaoPropriedade" type="text" placeholder="Endereço / Localização" required>
     <textarea placeholder="Descrição"></textarea>
     <button type="submit">Salvar</button>
   </form>
@@ -83,9 +83,11 @@
 <!-- GERENCIAMENTO DE PROPRIEDADE -->
 <div id="tela-gerenciar-propriedade" class="tela-form">
   <h2>Gerenciar Propriedade</h2>
-
   <button onclick="abrirTela('servicos-propriedade')">Serviços Extras</button>
-  <button onclick="abrirTela('galeria-propriedade')">Galeria de Fotos</button>
+  <ul id="lista-servicos">
+    <!-- Exemplo de propriedade -->
+    <li onclick="abrirTela('gerenciar-servico')"></li>
+  </ul>
   <button onclick="abrirTela('proprietario')">⬅️ Voltar</button>
 </div>
 
@@ -101,15 +103,8 @@
   <button onclick="abrirTela('gerenciar-propriedade')">⬅️ Voltar</button>
 </div>
 
-<!-- GALERIA -->
-<div id="tela-galeria-propriedade" class="tela-form">
-  <h2>Galeria de Fotos</h2>
-  <input type="file" id="uploadFoto" accept="image/*">
-  <div class="galeria">
-    <!-- Fotos vão aparecer aqui -->
-  </div>
-  <button onclick="abrirTela('gerenciar-propriedade')">⬅️ Voltar</button>
-</div>
+
+
 <!-- Tela Serviços da Casa -->
 <div id="tela-servicos" class="tela">
   <h2 id="titulo-casa">🏝️ Serviços disponíveis</h2>

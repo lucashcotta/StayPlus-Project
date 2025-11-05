@@ -7,8 +7,13 @@ import org.springframework.web.bind.annotation.*;
 import com.stayplus.model.Usuario;
 import com.stayplus.repository.UsuarioRepository;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @RestController
 @RequestMapping("/api/usuarios")
+@Getter
+@Setter
 public class UsuarioController {
 
     @Autowired

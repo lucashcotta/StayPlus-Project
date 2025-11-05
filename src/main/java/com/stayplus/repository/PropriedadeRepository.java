@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.stayplus.model.Propriedade;
 
 public interface PropriedadeRepository extends JpaRepository<Propriedade, Long> {
-    List<Propriedade> findByProprietarioId(Long idProprietario);
+    List<Propriedade> findByProprietarioId(Long idUsuario);
 }
