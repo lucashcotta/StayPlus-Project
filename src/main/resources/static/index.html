@@ -33,7 +33,7 @@
 
   <!-- Tela Inicial (Escolha de Perfil) -->
   <div id="tela-inicial" class="tela">
-    <h1>🏝️ BeachStay</h1>
+    <h1>🏝️ StayPlus</h1>
     <p>Escolha seu perfil:</p>
     <button id="btn-proprietario" onclick="abrirTela('proprietario')">Sou Proprietário</button>
     <button onclick="abrirTela('hospede-codigo')">Sou Hóspede</button>
@@ -42,13 +42,13 @@
 
   <!-- Tela Hóspede: Inserir Código -->
 <div id="tela-hospede-codigo" class="tela-form">
-  <h1>🏝️ BeachStay</h1>
+  <h1>🏝️ StayPlus</h1>
   <h2>🔑 Acesse sua Estadia</h2>
   <p>Digite o código fornecido pelo anfitrião para visualizar os serviços extras.</p>
 
   <form id="form-codigo-casa">
     <input type="text" id="codigoCasa" placeholder="Digite o código da casa" required>
-    <button  onclick="abrirTela('servicos')">Acessar Serviços</button>
+    <button  onclick="abrirTela('servicosTeste')">Acessar Serviços</button>
   </form>
 
   <button onclick="abrirTela('inicial')">⬅️ Voltar</button>
@@ -74,8 +74,8 @@
   <form id="form-cadastro-propriedade">
     <input id= "nomePropriedade" type="text" placeholder="Nome da propriedade" required>
     <input id= "localizacaoPropriedade" type="text" placeholder="Endereço / Localização" required>
-    <textarea placeholder="Descrição"></textarea>
-    <button type="submit">Salvar</button>
+    <input id= "codigopropriedade" type="text" placeholder="Código" required>
+   <button type="submit">Salvar</button>
   </form>
   <button onclick="abrirTela('proprietario')">⬅️ Voltar</button>
 </div>
@@ -106,42 +106,25 @@
 
 
 <!-- Tela Serviços da Casa -->
-<div id="tela-servicos" class="tela">
-  <h2 id="titulo-casa">🏝️ Serviços disponíveis</h2>
+<div id="tela-servicosTeste" class="tela">
+  <h2 id="titulo-casa">🏡 Serviços disponíveis</h2>
   <p>Selecione os serviços extras que deseja adicionar à sua estadia.</p>
 
-  <div class="grid-servicos">
-    <!-- Card de serviço -->
-    <div class="card-servico">
-      <h3>🍽️ Café da Manhã</h3>
-      <p class="descricao">Delicioso café da manhã completo servido na propriedade.</p>
-      <p class="preco">R$ 35,00</p>
-      <button onclick="adicionarCarrinho('Café da Manhã', 35)">+ Carrinho</button>
-    </div>
-
-    <div class="card-servico">
-      <h3>🚗 Transfer Aeroporto</h3>
-      <p class="descricao">Transporte confortável ida e volta até o aeroporto.</p>
-      <p class="preco">R$ 120,00</p>
-      <button onclick="adicionarCarrinho('Transfer Aeroporto', 120)">+ Carrinho</button>
-    </div>
-
-    <div class="card-servico">
-      <h3>🛶 Passeio de Caiaque</h3>
-      <p class="descricao">Explore o mar em um passeio de caiaque inesquecível.</p>
-      <p class="preco">R$ 80,00</p>
-      <button onclick="adicionarCarrinho('Passeio de Caiaque', 80)">+ Carrinho</button>
-    </div>
+  <div id="grid-servicos" class="grid-servicos">
+    <!-- Cards serão gerados dinamicamente -->
   </div>
 
   <!-- Carrinho fixo -->
   <div id="carrinho">
-    🛒 <span id="carrinho-itens">0</span> itens - Total: R$ <span id="carrinho-total">0,00</span>
+    <h3>🛒 Carrinho de Serviços</h3>
+    <ul id="lista-carrinho"></ul>
+    <p><strong>Total:</strong> R$ <span id="carrinho-total">0,00</span></p>
     <button id="finalizar-btn">Finalizar Pedido</button>
   </div>
 
   <button onclick="abrirTela('hospede-codigo')">⬅️ Voltar</button>
 </div>
+
 
   
   <script src="script.js"></script>

@@ -139,7 +139,7 @@ document.getElementById("btn-proprietario")?.addEventListener("click", async () 
     } else {
       propriedades.forEach(prop => {
         const li = document.createElement("li");
-        li.textContent = `${prop.nome} - ${prop.localizacao}`;
+        li.textContent = `${prop.nome} - ${prop.id}`;
         li.onclick = () => abrirGerenciamentoPropriedade(prop); // 👈 função corrigida
         lista.appendChild(li);
       });
@@ -162,11 +162,11 @@ document.getElementById("btn-cadastrar-propriedade")?.addEventListener("click", 
 
 document.getElementById("tela-cadastro-propriedade")?.addEventListener("submit", async (e) => {
   e.preventDefault();
-
   const nome = document.getElementById("nomePropriedade").value.trim();
-  const localizacao = document.getElementById("localizacaoPropriedade").value.trim();
+  const endereco = document.getElementById("localizacaoPropriedade").value.trim();
+  const codigo = document.getElementById("codigopropriedade").value.trim();
 
-  if (!nome || !localizacao) {
+  if (!nome || !endereco) {
     alert("Preencha todos os campos!");
     return;
   }
@@ -175,7 +175,8 @@ document.getElementById("tela-cadastro-propriedade")?.addEventListener("submit",
 
   const novaPropriedade = {
     nome,
-    localizacao,
+    endereco,
+    codigo,
     proprietario: { id: usuario.id }
   };
 
@@ -288,49 +289,178 @@ formServico?.addEventListener("submit", async function(e) {
 
 
 
-
-
-const formCodigo = document.getElementById("form-codigo-casa");
-formCodigo.addEventListener("submit", function (e) {
-  e.preventDefault();
-  const codigo = document.getElementById("codigoCasa").value.trim().toUpperCase();
-
-  if (casasCadastradas[codigo]) {
-    abrirServicos(casasCadastradas[codigo]); // abre os serviços da casa correspondente
-  } else {
-    alert("Código inválido! Verifique com o anfitrião.");
-  }
-});
+// ======================
+// HÓSPEDE – Buscar serviços pelo código da propriedade
+// ======================
 
 let carrinho = [];
-let total = 0;
+let propriedadeCarregada = null; // 🔥 salvar a propriedade retornada
+let usuarioId = 1; // 🔥 por enquanto fixo, até você ter login real
 
-function adicionarCarrinho(nome, preco) {
-  carrinho.push({ nome, preco });
-  total += preco;
+// Carrega serviços a partir do código digitado pelo hóspede
+async function carregarServicosPorCodigo(codigoPropriedade) {
+  try {
+    const response = await fetch(`http://localhost:8080/api/servicos/codigo/${codigoPropriedade}`);
+    if (!response.ok) throw new Error("Código inválido ou propriedade não encontrada.");
 
-  document.getElementById("carrinho-itens").textContent = carrinho.length;
-  document.getElementById("carrinho-total").textContent = total.toFixed(2).replace(".", ",");
+    const servicos = await response.json();
+
+    // 🔥 Primeiro item possui a propriedade
+    if (servicos.length > 0) {
+      propriedadeCarregada = servicos[0].propriedade; // salva o ID da propriedade
+    }
+
+    const grid = document.getElementById("grid-servicos");
+    grid.innerHTML = ""; // limpa antes
+
+    if (!servicos.length) {
+      grid.innerHTML = "<p>Nenhum serviço cadastrado para esta propriedade.</p>";
+      return;
+    }
+
+    // Criar cards dinamicamente
+    servicos.forEach(serv => {
+      const card = document.createElement("div");
+      card.classList.add("card-servico");
+
+      card.innerHTML = `
+        <h3>${serv.nome}</h3>
+        <p class="descricao">${serv.descricao || ""}</p>
+        <p class="preco">R$ ${parseFloat(serv.preco).toFixed(2)}</p>
+        <button class="btn-carrinho">Adicionar ao Carrinho</button>
+      `;
+
+      // Evento do botão
+      card.querySelector(".btn-carrinho").addEventListener("click", () => {
+        adicionarCarrinho(serv);
+      });
+
+      grid.appendChild(card);
+    });
+
+    abrirTela("servicosTeste");
+
+  } catch (error) {
+    console.error(error);
+    alert("Erro ao carregar serviços. Verifique o código da propriedade.");
+  }
 }
 
-// Evento de finalizar pedido
-document.getElementById("finalizar-btn")?.addEventListener("click", () => {
+
+// ======================
+// CARRINHO
+// ======================
+
+function adicionarCarrinho(servico) {
+  const existente = carrinho.find(item => item.id === servico.id);
+
+  if (existente) {
+    existente.quantidade++;
+  } else {
+    carrinho.push({
+      id: servico.id,
+      nome: servico.nome,
+      preco: servico.preco,
+      quantidade: 1
+    });
+  }
+
+  atualizarCarrinho();
+}
+
+function removerDoCarrinho(id) {
+  carrinho = carrinho.filter(item => item.id !== id);
+  atualizarCarrinho();
+}
+
+function atualizarCarrinho() {
+  const lista = document.getElementById("lista-carrinho");
+  const totalSpan = document.getElementById("carrinho-total");
+
+  lista.innerHTML = "";
+  let total = 0;
+
+  carrinho.forEach(item => {
+    const li = document.createElement("li");
+    li.classList.add("item-carrinho");
+
+    li.innerHTML = `
+      <span>${item.nome} (${item.quantidade}x) — R$ ${(item.preco * item.quantidade).toFixed(2)}</span>
+      <button class="btn-remover">❌</button>
+    `;
+
+    li.querySelector(".btn-remover").addEventListener("click", () => {
+      removerDoCarrinho(item.id);
+    });
+
+    lista.appendChild(li);
+
+    total += item.preco * item.quantidade;
+  });
+
+  totalSpan.textContent = total.toFixed(2).replace(".", ",");
+}
+
+
+// ======================
+// FINALIZAR PEDIDO – AGORA ENVIA PARA O BACKEND
+// ======================
+
+document.getElementById("finalizar-btn")?.addEventListener("click", async () => {
   if (carrinho.length === 0) {
     alert("Seu carrinho está vazio!");
     return;
   }
 
-  let resumo = "Itens selecionados:\n";
-  carrinho.forEach(item => {
-    resumo += `- ${item.nome} (R$ ${item.preco})\n`;
-  });
-  resumo += `\nTotal: R$ ${total.toFixed(2)}`;
-  alert(resumo);
+  if (!propriedadeCarregada || !propriedadeCarregada.id) {
+    alert("Erro: nenhuma propriedade carregada.");
+    return;
+  }
 
-  // limpar carrinho
-  carrinho = [];
-  total = 0;
-  document.getElementById("carrinho-itens").textContent = "0";
-  document.getElementById("carrinho-total").textContent = "0,00";
+  // 🔥 JSON compatível com o backend
+  const pedido = {
+    usuario: { id: usuarioId },
+    propriedade: { id: propriedadeCarregada.id },
+    itens: carrinho.map(item => ({
+      quantidade: item.quantidade,
+      servico: { id: item.id }
+    }))
+  };
+
+  console.log("Enviando pedido:", pedido);
+
+  try {
+    const response = await fetch("http://localhost:8080/api/pedidos", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(pedido)
+    });
+
+    if (!response.ok) throw new Error("Erro ao enviar pedido.");
+
+    const data = await response.json();
+
+    alert("Pedido realizado com sucesso!");
+    console.log("Pedido salvo no banco:", data);
+
+    carrinho = [];
+    atualizarCarrinho();
+
+  } catch (error) {
+    console.error(error);
+    alert("Erro ao finalizar o pedido.");
+  }
+});
+
+
+// ======================
+// Evento do formulário do código da propriedade
+// ======================
+
+document.getElementById("form-codigo-casa")?.addEventListener("submit", (e) => {
+  e.preventDefault();
+  
+  const codigo = document.getElementById("codigoCasa").value.trim().toUpperCase();
+  carregarServicosPorCodigo(codigo);
 });
 

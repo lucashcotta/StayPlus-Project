@@ -1,6 +1,7 @@
 package com.stayplus.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,18 +35,29 @@ public class PropriedadeController {
     public List<Propriedade> listarPorUsuario(@PathVariable Long usuarioId) {
         return propriedadeRepository.findByProprietarioId(usuarioId);
     }
+//     @GetMapping("/codigo/{codigo}")
+//     public ResponseEntity<Optional<Propriedade>> buscarPorCodigo(@PathVariable String codigo) {
+//         Optional<Propriedade> propriedade = propriedadeRepository.findByCodigo(codigo.toUpperCase());
+//     if (propriedade == null) {
+//         return ResponseEntity.notFound().build();
+//     }
+//     return ResponseEntity.ok(propriedade);
+// }
+
 
     // Cadastrar nova propriedade
     @PostMapping
     public ResponseEntity<Propriedade> cadastrarPropriedade(@RequestBody Propriedade propriedade) {
         if (propriedade.getProprietario() == null || propriedade.getProprietario().getId() == null) {
+            System.out.println("Proprietário nulo ou ID do proprietário nulo");
             return ResponseEntity.badRequest().build();
         }
 
         Usuario usuario = usuarioRepository.findById(propriedade.getProprietario().getId())
                 .orElse(null);
 
-        if (usuario == null) {
+            if (usuario == null) {
+                System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
             return ResponseEntity.notFound().build();
         }
 

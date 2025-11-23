@@ -28,6 +28,5 @@ public class ServicoExtra {
     @ManyToOne
     @JoinColumn(name = "propriedade_id")
     @JsonBackReference
-    //  @JsonIgnore
     private Propriedade propriedade;
 }

@@ -44,5 +44,17 @@ public class ServicoController {
         ServicoExtra novo = servicoRepository.save(servico);
         return ResponseEntity.ok(novo);
     }
+
+    @GetMapping("/codigo/{codigo}")
+    public ResponseEntity<List<ServicoExtra>> listarServicosPorCodigoPropriedade(@PathVariable String codigo) {
+        Propriedade propriedade = propriedadeRepository.findByCodigo(codigo);
+
+        if (propriedade == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<ServicoExtra> servicos = servicoRepository.findByPropriedadeId(propriedade.getId());
+        return ResponseEntity.ok(servicos);
+    }
 }
 
